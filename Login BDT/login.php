@@ -9,13 +9,13 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$cedula_Usuario= $_GET['cedula_Usuario'];
-$contrasena = $_GET['contrasena'];
+$cedula_Usuario= $_POST['cedula_Usuario'];
+$contrasena = $_POST['contrasena'];
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 
 //En las siguinetes líneas se realiza la consulta y se ralizan acciones dependiendo de los datos obtenidos 
-$querys = $con->prepare("SELECT  *  from  usuariospacientes  where Cedula_DNI = ? AND Password= ?");
+$querys = $con->prepare("SELECT  *  from  usuariospacientes  where Cedula_DNI = ? AND Password= ? AND TipoUserFK= 1");
 $querys->execute(array($cedula_Usuario,$contrasena ));
    
 
