@@ -9,8 +9,8 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$cedula_Usuario= $_POST['cedula_Usuario'];
-$contrasena = $_POST['contrasena'];
+$cedula_Usuario= $_GET['cedula_Usuario'];
+$contrasena = $_GET['contrasena'];
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 
@@ -46,5 +46,5 @@ if ($querys) {
 } 
 
 //  http://localhost/ApisTesis/Login BDT/login.php?cedula_Usuario=8-962-3421&contrasena=12345  <<<<< LINK DEL API 
-
+// http://192.168.40.110:80/ApisTesis/Login BDT/login.php?cedula_Usuario=8-962-3421&contrasena=12345
 ?>
