@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -50,4 +51,3 @@ if ($querysito->rowCount() > 0) {
 
 // LINK DEL API ↓↓↓↓↓↓↓↓↓↓↓↓↓
 //  http://localhost/ApisTesis/Medicos/ModificarMedico.php?Nombre_Medico=Jesús Castillero&Id_Medico=11&Nombre_Especialidad=fantasma
-?>

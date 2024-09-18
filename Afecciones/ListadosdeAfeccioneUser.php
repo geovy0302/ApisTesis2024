@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,7 +10,7 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 
-$Id_Usuario= $_GET['Id_Usuario'];
+$Id_Usuario= $_POST['Id_Usuario'];
 
 //En las siguinetes líneas se realiza la consulta y se ralizan acciones dependiendo de los datos obtenidos 
 $querysAmarre = $con->prepare("SELECT d.Id_Usuario, a.Id_Enfermedad,b.Id_UserEnfermedad ,a.Nombre_enf,c.descripcion_TipEnfer,b.Fecha_Inicio,b.Fecha_Finalización,b.DescripcionPropia_enf,b.Fecha_Regis_Cro
@@ -40,11 +41,13 @@ if ($querysAmarre->rowCount() > 0) {
         array_push($response, $stuff);
         header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }else{
         $response["process"] = "Datos_de_afeccion_no_encontrados";
         $response["message"] = "Error en intentar encontar los datos de afección de este usuario";
         header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }
     
 }else{
@@ -52,9 +55,10 @@ if ($querysAmarre->rowCount() > 0) {
     $response["message"] = "Error, No hay afecciones de este tipo registradas para este usuario";
     header('Content-Type: application/json');
     echo (json_encode($response));
+    exit();
 } 
 
 //  http://localhost/ApisTesis/Afecciones/ListadosdeAfeccioneUser.php?Id_Usuario=4 <<<<< LINK DEL API
-?>
+
 
  

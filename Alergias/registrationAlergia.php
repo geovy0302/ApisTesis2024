@@ -1,7 +1,8 @@
     <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    ob_start(); // Inicia el buffer de salida
     require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
     $db = new Conexion();
@@ -10,12 +11,12 @@
     $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
     
 
-    $Id_Usuario = $_GET["Id_Usuario"];
+    $Id_Usuario = $_POST["Id_Usuario"];
     $Id_Alergia= "";//Este y primero se tomanm de los adapter
-    $Nombre_Alergia= $_GET['Nombre_Alergia'];//Este y los dos siguinetes se toman por teclado por parte del usuario
-    $Id_TipoAlergia= $_GET['Id_TipoAlergia'];
-    $DecripcionPropia_Alerg= $_GET['DecripcionPropia_Alerg'];
-    $Fecha_Regis_Aler= $_GET['Fecha_Regis_Aler'];
+    $Nombre_Alergia= $_POST['Nombre_Alergia'];//Este y los dos siguinetes se toman por teclado por parte del usuario
+    $Id_TipoAlergia= $_POST['Id_TipoAlergia'];
+    $DecripcionPropia_Alerg= $_POST['DecripcionPropia_Alerg'];
+    $Fecha_Regis_Aler= $_POST['Fecha_Regis_Aler'];
  
 
     
@@ -38,7 +39,8 @@
             header('Content-Type: application/json');
             $response["process"] = "DatosuserAlergia_Found";
             $response["message"] = "Este Usuario ya cuenta con esa alergia registrada";
-            echo (json_encode($response));      
+            echo (json_encode($response)); 
+            exit();     
         }else{
             $querysTwo = $con->prepare("INSERT INTO usuaalergia (`Id_UsuarioFK`, `Id_AlergiaFK`, `DecripcionPropia_Alerg`, `Fecha_Regis_Aler`) VALUES (?,?,?,?)");		 
             $querysTwo->execute(array($Id_Usuario,$Id_Alergia,$DecripcionPropia_Alerg,$Fecha_Regis_Aler));
@@ -47,11 +49,13 @@
                 $response["process"] = "DatosuserAlergia_Registered1";
                 $response["message"] = "Datos de alergia registrada en la BD";
                 echo (json_encode($response));
+                exit();
             }else{
                 header('Content-Type: application/json');
                 $response["process"] = "DatosuserAlergia_NOTRegistered1";
                 $response["message"] = "Datos de alergia NO registrados en la BD";
                 echo (json_encode($response));
+                exit();
             }
         }    
     }else {
@@ -73,11 +77,13 @@
                     $response["process"] = "DatosuserAlergiaNew_Registered2";
                     $response["message"] = "Datos de alergia registrada en la BD";
                     echo (json_encode($response));
+                    exit();
                 }else{
                     header('Content-Type: application/json');
                     $response["process"] = "DatosuserAlergiaNew_NOTRegistered2";
                     $response["message"] = "Datos de alergia NO registrados en la BD";
                     echo (json_encode($response));
+                    exit();
                 }
             }
         }else{
@@ -85,9 +91,10 @@
             $response["process"] = "DatosuserAlergia_NOTRegistered0";
             $response["message"] = "Datos de alergia NO registrados en la BD";
             echo (json_encode($response));
+            exit();
         }
     }
 
     // http://localhost/ApisTesis/Alergias/registrationAlergia.php?Id_Usuario=6&&Nombre_Alergia=Papos&Id_TipoAlergia=3 &DecripcionPropia_Alerg= La alergia al papo me provoca estornudos constantes, con picazón en los ojos y congestión nasal.&Fecha_Regis_Aler=2024/05/09   <<<<< LINK DEL API 
-    ?>
+    
 	

@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,8 +10,8 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$cedula_Usuario= $_GET['cedula_Usuario'];
-$contrasena = $_GET['contrasena'];
+$cedula_Usuario= $_POST['cedula_Usuario'];
+$contrasena = $_POST['contrasena'];
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 
@@ -37,14 +38,15 @@ if ($querys) {
         array_push($response, $stuff);
         header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }else{
         $response["process"]= "Datos_de_user_No_encontrados";
         $response["message"] = "Datos de este usuario No encontrado";
         header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }
 } 
 
 //  http://localhost/ApisTesis/Login BDT/login.php?cedula_Usuario=8-962-3421&contrasena=12345  <<<<< LINK DEL API 
 // http://192.168.40.110:80/ApisTesis/Login BDT/login.php?cedula_Usuario=8-962-3421&contrasena=12345
-?>

@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -36,23 +37,25 @@ if ($querysito) {
     $queryTwo = $con->prepare("UPDATE datosuserspaciente SET Peso=?,Altura=? where Id_UsuarioFK=?");
     $queryTwo->execute(array($Peso,$Altura,$Id_Usuario));
     if ($queryTwo) {
-        header('Content-Type: application/json');
         $response["process"] = "DatosuserDependiente_updatesss";
         $response["message"] = "Los Datos del usuario escogido han sido actulizados con éxito";
-        echo (json_encode($response));
-    }else{
         header('Content-Type: application/json');
+        echo (json_encode($response));
+        exit();
+    }else{
         $response["process"] = "ErrorupdatedatospacienteQueryComplete";
         $response["message"] = "Error en intentar actualizar los datos del usuario en todas las tablas";
+        header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }
 }else {
-    header('Content-Type: application/json');
     $response["process"] = "Errorupdatedatospaciente";
     $response["message"] = "Error en intentar actualizar los datos del usuario";
+    header('Content-Type: application/json');
     echo (json_encode($response));
+    exit();
 }
 
 // LINK DEL API ↓↓↓↓↓↓↓↓↓↓↓↓↓
 //  http://localhost/ApisTesis/PacientesDependientes/ModifiUserDePen.php?Id_Usuario=4&NombreC_U=Geovanny&Según_nombre=Alonso&Apellido_CU=Castillero&SegundoAC_U=Polanco&Sexo=M&Dirección=Panamá, Chiriquí, Gualaca&Edad=22&Fecha_Nacimiento=2001/02/02&Cedula_DNI=8-962-3421&Tipo_D_Sangre=O(+)&&E_mail=geovanny@gmail.com&Peso=220&Altura=1.81 
-?>

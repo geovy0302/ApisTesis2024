@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,21 +10,21 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$Id_Usuario = $_GET["Id_Usuario"];
-$NombreC_U = $_GET["NombreC_U"];
-$Según_nombre = $_GET["Según_nombre"];
-$Apellido_CU = $_GET["Apellido_CU"];
-$SegundoAC_U = $_GET["SegundoAC_U"];
-$Sexo = $_GET["Sexo"];
-$Dirección = $_GET["Dirección"];
-$Edad = $_GET["Edad"];
-$Fecha_Nacimiento = $_GET["Fecha_Nacimiento"];
-$Cedula_DNI = $_GET["Cedula_DNI"];
-$Tipo_D_Sangre = $_GET["Tipo_D_Sangre"];
+$Id_Usuario = $_POST["Id_Usuario"];
+$NombreC_U = $_POST["NombreC_U"];
+$Según_nombre = $_POST["Según_nombre"];
+$Apellido_CU = $_POST["Apellido_CU"];
+$SegundoAC_U = $_POST["SegundoAC_U"];
+$Sexo = $_POST["Sexo"];
+$Dirección = $_POST["Dirección"];
+$Edad = $_POST["Edad"];
+$Fecha_Nacimiento = $_POST["Fecha_Nacimiento"];
+$Cedula_DNI = $_POST["Cedula_DNI"];
+$Tipo_D_Sangre = $_POST["Tipo_D_Sangre"];
 //$Tipo_D_Sangre = $con->real_escape_string($Tipo_D_Sangre);
-$E_mail = $_GET["E_mail"];
-$Altura = $_GET["Altura"];
-$Peso = $_GET["Peso"];
+$E_mail = $_POST["E_mail"];
+$Altura = $_POST["Altura"];
+$Peso = $_POST["Peso"];
 
 
 
@@ -37,23 +38,25 @@ if ($querysito) {
     $queryTwo = $con->prepare("UPDATE datosuserspaciente SET Peso=?,Altura=? where Id_UsuarioFK=?");
     $queryTwo->execute(array($Peso,$Altura,$Id_Usuario));
     if ($queryTwo) {
-        header('Content-Type: application/json');
         $response["process"] = "perfiluserprincipal_updatesss";
         $response["messages"] = "Perfil del usuario principal actualizado";
-        echo (json_encode($response));
-    }else{
         header('Content-Type: application/json');
+        echo (json_encode($response));
+        exit();
+    }else{
         $response["process"] = "Errorupdateperfil_1";
         $response["messages"] = "Error, Perfil del usuario principal no actualizado por consulta";
+        header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }
 }else {
-    header('Content-Type: application/json');
     $response["process"] = "Errorupdateperfil_2";
     $response["messages"] = "Error, Perfil del usuario principal no actualizado";
+    header('Content-Type: application/json');
     echo (json_encode($response));
+    exit();
 }
 
 // LINK DEL API ↓↓↓↓↓↓↓↓↓↓↓↓↓
 //  http://localhost/ApisTesis/PerfilUser/ModifiDatosB.php?Id_Usuario=3&NombreC_U=Geovanny&Según_nombre=Alonso&Apellido_CU=Castillero&SegundoAC_U=Polanco&Sexo=M&Dirección=Panamá, Chiriquí, David&Edad=22&Fecha_Nacimiento=2001/02/02&Cedula_DNI=8-962-3421&Tipo_D_Sangre=O(-)&&E_mail=geovanny@gmail.com&Peso=220&Altura=1.80 
-?>

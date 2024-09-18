@@ -1,7 +1,8 @@
     <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+   //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    ob_start(); // Inicia el buffer de salida
     require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
     $db = new Conexion();
@@ -10,29 +11,27 @@
     $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
     
 
-    $Id_Usuario = $_GET["Id_Usuario"];
-    $Nombre_CentroHos = $_GET["Nombre_CentroHos"];
-    $Nombre_Especialidad = $_GET['Nombre_Especialidad'];
-    $Nombre_Medico = $_GET['Nombre_Medico'];
-    $Descrip_Consul= $_GET['Descrip_Consul'];
-    $Diagnóstico = $_GET['Diagnóstico'];
-    $Detalle_Receta = $_GET['Detalle_Receta'];
-    $Detalle_de_Examen = $_GET['Detalle_de_Examen'];
-    $FechadeCita = $_GET['FechadeCita'];
-    $Fecha_RegistrCi = $_GET['Fecha_RegistrCi'];
-    $SignoVital_Presion = $_GET['SignoVital_Presion'];
-    $SignoVital_Temperatura = $_GET['SignoVital_Temperatura'];
-    $SignoVital_Peso = $_GET['SignoVital_Peso'];
-    $SignoVital_Altura = $_GET['SignoVital_Altura'];
+    $Id_Usuario = $_POST["Id_Usuario"];
+    $Nombre_CentroHos = $_POST["Nombre_CentroHos"];
+    $Nombre_Especialidad = $_POST['Nombre_Especialidad'];
+    $Nombre_Medico = $_POST['Nombre_Medico'];
+    $Descrip_Consul= $_POST['Descrip_Consul'];
+    $Diagnóstico = $_POST['Diagnóstico'];
+    $Detalle_Receta = $_POST['Detalle_Receta'];
+    $Detalle_de_Examen = $_POST['Detalle_de_Examen'];
+    $FechadeCita = $_POST['FechadeCita'];
+    $Fecha_RegistrCi = $_POST['Fecha_RegistrCi'];
+    $SignoVital_Presion = $_POST['SignoVital_Presion'];
+    $SignoVital_Temperatura = $_POST['SignoVital_Temperatura'];
+    $SignoVital_Peso = $_POST['SignoVital_Peso'];
+    $SignoVital_Altura = $_POST['SignoVital_Altura'];
     
     $Id_cenntroMedico= "";
     $Id_medico= "";
 
     
- 
 
-    
-    //Select Para saber si ya el nombre de alergia se encuentra en la base datos
+    //Select Para saber si ya el nombre del Centro Médico se encuentra en la base datos
     $querys = $con->prepare("SELECT * FROM  centros_de_atencio  where  Nombre_CentroHos = ?");		
     $querys->execute(array($Nombre_CentroHos));
 
@@ -59,29 +58,30 @@
             $querysTwo->execute(array($Id_Usuario,$Id_cenntroMedico,$Id_medico,$Descrip_Consul,$Diagnóstico,$Detalle_Receta,$Detalle_de_Examen,$FechadeCita,$Fecha_RegistrCi,$SignoVital_Presion,$SignoVital_Temperatura,$SignoVital_Peso,$SignoVital_Altura));
 
             if ($querysTwo) {
-                header('Content-Type: application/json');
                 $response["process"] = "DatosuserCitas_Registered";
                 $response["message"] = "Datos de Citas Médicas registrados en la BD";
-                echo (json_encode($response));
-            }else{
                 header('Content-Type: application/json');
+                echo (json_encode($response));
+                exit();
+            }else{
                 $response["process"] = "DatosuserCitasMedicas_NOTRegistered";
                 $response["message"] = "Datos de citas médicas NO registrados en la BD";
+                header('Content-Type: application/json');
                 echo (json_encode($response));
+                exit();
             }
         }else {
-            header('Content-Type: application/json');
             $response["process"] = "DatosuserCitasMedicas_NOTRegistered";
             $response["message"] = "Datos de citas medicas no registrados en la BD, debido a que el doctor no existe";
+            header('Content-Type: application/json');
             echo (json_encode($response));
+            exit();
         }
     }else {
-        header('Content-Type: application/json');
         $response["process"] = "DatosuserCitasMedicas_NOTRegistered";
         $response["message"] = "Datos de citas medicas no registrados en la BD, debido a que al centro médico no existe";
+        header('Content-Type: application/json');
         echo (json_encode($response));
+        exit();
     }
-
-    
-    ?>
 	

@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,9 +10,9 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$Id_CentroHosp = $_GET["Id_CentroHosp"];
-$Nombre_CentroHos= $_GET['Nombre_CentroHos'];//Este y primero se tomanm de los adapter
-$ProvinciaUbicacion= $_GET['ProvinciaUbicacion'];
+$Id_CentroHosp = $_POST["Id_CentroHosp"];
+$Nombre_CentroHos= $_POST['Nombre_CentroHos'];//Este y primero se tomanm de los adapter
+$ProvinciaUbicacion= $_POST['ProvinciaUbicacion'];
 
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
@@ -25,13 +26,14 @@ if ($querysito) {
     $response["process"] = "Datos_de_CentroAtencion_Update";
     $response["message"] = "Datos de Centro de Atención actualizados con éxito";
     echo (json_encode($response));
+    exit();
 }else {
     header('Content-Type: application/json');
     $response["process"] = "Datos_de_CentroAtencion_No_Update";
     $response["message"] = "Error en intentar modificar los datos de este centro médico";
     echo (json_encode($response));
+    exit();
 }
 
 // LINK DEL API ↓↓↓↓↓↓↓↓↓↓↓↓↓
 //  http://localhost/ApisTesis/CentrosHospitalarios/ModifiCentroMed.php?Id_CentroHosp=11&Nombre_CentroHos=Hospital Chiriquí&ProvinciaUbicacion=Chiriquí
-?>

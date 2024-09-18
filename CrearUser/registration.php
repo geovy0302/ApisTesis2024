@@ -1,7 +1,8 @@
     <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+   //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    ob_start(); // Inicia el buffer de salida
     require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
     $db = new Conexion();
@@ -40,10 +41,11 @@
     if ($querys->rowCount() > 0) {
         $result = $querys->fetchAll(PDO::FETCH_ASSOC);
         if($result != null){
-            header('Content-Type: application/json');
             $response["process"] = "Existing_User";
             $response["message"] = "Ya existe un usuario con este dato dato único(cédula) en nuestro sistema";
+            header('Content-Type: application/json');
             echo (json_encode($response));
+            exit();
         }
     }else{
         //Este If controla el registro para aquellos usuarios principales únicamente en la tabla de usuariospacientes y la de datosuserspaciente
@@ -62,22 +64,25 @@
                     $querysTwo = $con->prepare("INSERT INTO datosuserspaciente (`Id_UsuarioFK`, `Peso`, `Altura`) VALUES (?,?,?)");		
                     $querysTwo->execute(array($IdLastUser,$Peso,$Altura));
                     if ($querysTwo) {
-                        header('Content-Type: application/json');
                         $response["process"] = "Principal_User_Registered";
                         $response["message"] = "Usuario Principal Registrado con Éxito en las dos tablas pertinentes";
+                        header('Content-Type: application/json');
                         echo (json_encode($response));
+                        exit();
                     }
                 }else{
                     $response["process"] = "Error_Principal_User_Registration_A";
                     $response["message"] = "Erro al traer el último usuario para agregar el usuario principal a las 2 tablas";
                     header('Content-Type: application/json');
                     echo (json_encode($response)); 
+                    exit();
                 }
             }else{
-                header('Content-Type: application/json');
                 $response["process"] = "Error_Principal_User_Registration_B";
                 $response["message"] = "Usuario No registrado para Tipo principal";
+                header('Content-Type: application/json');
                 echo (json_encode($response));
+                exit();
             }
         }else{
             //Este sección controla el registro para aquellos usuarios dependientes en la tabla de usuariospacientes, en la de datosuserspaciente y en la de userdependencia
@@ -98,10 +103,11 @@
                         $querysFive = $con->prepare("INSERT INTO userdependencia (`Id_UserPrinciFK`, `Id_UserDepenFK`) VALUES (?,?)");		
                         $querysFive->execute(array($IdUserPrincipal,$IdLastUser));
                         if ($querysFive) {
-                            header('Content-Type: application/json');
                             $response["process"] = "Second_User_Registered";
                             $response["message"] = "Usuario Dependiente Registrado con Éxito";
+                            header('Content-Type: application/json');
                             echo (json_encode($response));
+                            exit();
                         } 
                     }
                 }else{
@@ -109,17 +115,19 @@
                     $response["message"] = "Erro al traer el último usuario para agregar el usuario dependiente";
                     header('Content-Type: application/json');
                     echo (json_encode($response)); 
+                    exit();
                 }
                 
             }else{
-                header('Content-Type: application/json');
                 $response["process"] = "Error_Principal_User_Registration_D";
                 $response["message"] = "Usuario Dependiente No registrado en las 3 tablas pertinentemente";
+                header('Content-Type: application/json');
                 echo (json_encode($response));
+                exit();
             }
         }
     }
 
     // http://localhost/ApisTesis/CrearUser/registration.php?Nombre_Com=Jesús Guerra&Sexo_User=M&Direccion_User=Panamá&Edad=21&Fecha_Nacimiento=2004-05-12&TipoSan_User=O+&cedula_User=09-581-367&Email_User=Jesus@gmail.com&Password_User=20205&Fecha_RegistroUser=2024-02-19 <<<<< LINK DEL API 
-    ?>
+    
 	

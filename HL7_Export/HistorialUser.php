@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,7 +10,7 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$Id_Usuario= $_GET['Id_Usuario'];
+$Id_Usuario= $_POST['Id_Usuario'];
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 $datosFinales = array();
@@ -82,10 +83,10 @@ if ($querysAfecciones->rowCount() > 0) {
     $result = $querysAfecciones->fetchAll(PDO::FETCH_ASSOC); 
     foreach ($result as $row) {
         $stuff = array();
-        $stuff["Nombre_enf"] = $row['Nombre_enf'];
-        $stuff["descripcion_TipEnfer"] = $row['descripcion_TipEnfer'];
+        $stuff["Nombre_Afeccion"] = $row['Nombre_enf'];
+        $stuff["descripcion_TipAfeccion"] = $row['descripcion_TipEnfer'];
         $stuff["Fecha_Inicio"] = $row['Fecha_Inicio'];
-        $stuff["Fecha_Finalización"] = $row['Fecha_Finalización'];
+        $stuff["Fecha_Finalizacion"] = $row['Fecha_Finalización'];
         $stuff["DescripcionPropia_enf"] = $row['DescripcionPropia_enf'];
         $stuff["Fecha_Regis_Cro"] = $row['Fecha_Regis_Cro'];
         array_push($response, $stuff);
@@ -143,20 +144,7 @@ if ($querysHospitalizaciones->rowCount() > 0) {
     $datosFinales["Ingresos_hospitalarios"]= $response;
     header('Content-Type: application/json');
     echo (json_encode($datosFinales));
+    exit();
 }
 
-
-
-
-
 // http://localhost/ApisTesis/HL7_Export/HistorialUser.php?Id_Usuario=4
-
-
-
-
-
-
-
-
-
-?>

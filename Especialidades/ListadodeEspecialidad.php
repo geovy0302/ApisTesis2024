@@ -1,7 +1,8 @@
 <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    ob_start(); // Inicia el buffer de salida
     require_once("conexion.php"); //Inclusión requerida el archivo de conexión
     
     $db = new Conexion();
@@ -29,13 +30,14 @@
             $stuff["message"] = "Datos de especialidad encontrados";
             header('Content-Type: application/json');
             echo (json_encode($response));
+            exit();
         }else{
             $response["process"] = "Datos_de_Especialidades_No_encontrados";
             $response["message"] = "Datos de especialidad no encontrados";
             header('Content-Type: application/json');
             echo (json_encode($response));
+            exit();
         }
     } 
 
     //  http://localhost/ApisTesis/Especialidades/ListadodeEspecialidad.php?  <<<<< LINK DEL API 
-?>

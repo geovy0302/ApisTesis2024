@@ -1,16 +1,15 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
 $con = $db->conectar(); //Estas líneas son para establecer la conexión por medio de la instanciación a ese archivo de conexión con los permisos
 
-
-
-$Id_Usuario= $_GET['Id_Usuario'];
-$Id_TipoEnfer= $_GET['Id_TipoEnfer'];
+$Id_Usuario= $_POST['Id_Usuario'];
+$Id_TipoEnfer= $_POST['Id_TipoEnfer'];
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
 
@@ -43,12 +42,13 @@ if ($querysAmarre->rowCount() > 0) {
     array_push($response, $stuff);
     header('Content-Type: application/json');
     echo (json_encode($response));
+    exit();
 }else{
     $response["process"] = "Datos_de_medicamentos_no_encontrados";
     $response["message"] = "Error, No hay medicamentos de este tipo registrados para este usuario";
     header('Content-Type: application/json');
     echo (json_encode($response));
+    exit();
 } 
 
 //  http://localhost/ApisTesis/Medicamentos/BuscarMedicamentoTipo.php?Id_Usuario=4&Id_TipoEnfer=1 <<<<< LINK DEL API 
-?>

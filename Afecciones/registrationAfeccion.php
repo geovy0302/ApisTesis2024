@@ -1,7 +1,8 @@
     <?php
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    //ini_set('display_errors', 1);
+    //ini_set('display_startup_errors', 1);
+    //error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+    ob_start(); // Inicia el buffer de salida
     require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
     $db = new Conexion();
@@ -10,18 +11,18 @@
     $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
     
 
-    $Id_Usuario = $_GET["Id_Usuario"];
+    $Id_Usuario = $_POST["Id_Usuario"];
     $Id_Enfermedad= "";//Este y primero se tomanm de los adapter
     $Id_EnfermedadtipoAux= "";
-    $Nombre_enf= $_GET['Nombre_enf'];//Este y los dos siguinetes se toman por teclado por parte del usuario
-    $Id_TipoEnfer= $_GET['Id_TipoEnfer'];
-    $Fecha_Inicio= $_GET['Fecha_Inicio'];
-    $Fecha_Finalizacion= $_GET['Fecha_Finalización'];
+    $Nombre_enf= $_POST['Nombre_enf'];//Este y los dos siguinetes se toman por teclado por parte del usuario
+    $Id_TipoEnfer= $_POST['Id_TipoEnfer'];
+    $Fecha_Inicio= $_POST['Fecha_Inicio'];
+    $Fecha_Finalizacion= $_POST['Fecha_Finalización'];
     if (($Fecha_Finalizacion == "") || ($Fecha_Finalizacion == null)) {
         $Fecha_Finalizacion= "no tiene";
     }
-    $DescripcionPropia_enf= $_GET['DescripcionPropia_enf'];
-    $Fecha_Regis_Cro= $_GET['Fecha_Regis_Cro'];
+    $DescripcionPropia_enf= $_POST['DescripcionPropia_enf'];
+    $Fecha_Regis_Cro= $_POST['Fecha_Regis_Cro'];
  
 
     
@@ -46,7 +47,8 @@
                 header('Content-Type: application/json');
                 $response["process"] = "DatosuserAffection_cronicanoregistred";
                 $response["message"] = "Este Usuario ya cuenta con esta afección crónica registrada";
-                echo (json_encode($response));      
+                echo (json_encode($response));  
+                exit();    
             }else{
                 $querysTwo = $con->prepare("INSERT INTO usuaenfermedad (`Id_UsuarioFK`, `Id_EnfermedadFK`, `Fecha_Inicio`, `Fecha_Finalización`,`DescripcionPropia_enf`,`Fecha_Regis_Cro` ) VALUES (?,?,?,?,?,?)");		 
                 $querysTwo->execute(array($Id_Usuario,$Id_Enfermedad,$Fecha_Inicio,$Fecha_Finalizacion,$DescripcionPropia_enf,$Fecha_Regis_Cro));
@@ -55,11 +57,13 @@
                     $response["process"] = "DatosuserAfeccion_Registered1";
                     $response["message"] = "Datos de afeccióin registrados en la BD";
                     echo (json_encode($response));
+                    exit();
                 }else{
                     header('Content-Type: application/json');
                     $response["process"] = "DatosuserAlergia_NOTRegistered1";
                     $response["message"] = "Datos de afección NO registrados en la BD";
                     echo (json_encode($response));
+                    exit();
                 }
             }      
         }else{
@@ -70,11 +74,13 @@
                 $response["process"] = "DatosuserAfeccion_Registered1";
                 $response["message"] = "Datos de afeccióin registrados en la BD";
                 echo (json_encode($response));
+                exit();
             }else{
                 header('Content-Type: application/json');
                 $response["process"] = "DatosuserAlergia_NOTRegistered1";
                 $response["message"] = "Datos de afección NO registrados en la BD";
                 echo (json_encode($response));
+                exit();
             }
         }    
     }else {
@@ -96,11 +102,13 @@
                     $response["process"] = "DatosuserANew_Registered2";
                     $response["message"] = "Datos de nueva afección registrada en la BD";
                     echo (json_encode($response));
+                    exit();
                 }else{
                     header('Content-Type: application/json');
                     $response["process"] = "DatosuserAlergiaNew_NOTRegistered2";
                     $response["message"] = "Datos de afección NO registrados en la BD";
                     echo (json_encode($response));
+                    exit();
                 }
             }
         }else{
@@ -108,6 +116,7 @@
             $response["process"] = "DatosuserAfeccionNew_NOTRegistered0";
             $response["message"] = "Datos de nueva alergia no registrados en la BD";
             echo (json_encode($response));
+            exit();
         }
     }
 
@@ -117,5 +126,5 @@
 
 
     // http://localhost/ApisTesis/Afecciones/registrationAfeccion.php?Id_Usuario=4&Nombre_enf=Apendicitis&Id_TipoEnfer=2&Fecha_Inicio=2024/03/20&Fecha_Finalización=2024/05/03&DescripcionPropia_enf=Esta se me presentó con un dolor intenso en la parte inferior derecha del abdomen, acompañado de náuseas y fiebre, pero luego de la operación y la medicacón pertienente me curé&Fecha_Regis_Cro=2024/05/06  <<<<< LINK DEL API  
-    ?>
+    
 	

@@ -1,7 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
+//error_reporting(E_ALL ^ E_DEPRECATED); //Estas Líneas son para el tema del manejo de errores en la pantalla o más bien consola por medio de informes y demás 
+ob_start(); // Inicia el buffer de salida
 require_once("conexion.php"); //Inclusión requerida el archivo de conexión
 
 $db = new Conexion();
@@ -9,8 +10,8 @@ $con = $db->conectar(); //Estas líneas son para establecer la conexión por med
 
 
 
-$Id_UsuarioPrincipal = $_GET['Id_UsuarioPrincipal'];
-$Cedula_DNI= $_GET['Cedula_DNI'];
+$Id_UsuarioPrincipal = $_POST['Id_UsuarioPrincipal'];
+$Cedula_DNI= $_POST['Cedula_DNI'];
 $Id_Pacientedependiente= "";
 
 $response = array();//se crea un arreglo vacío para almacenar los resultados de la consulta
@@ -59,11 +60,13 @@ if ($querys->rowCount() > 0) {
                 array_push($response, $stuff);
                 header('Content-Type: application/json');
                 echo (json_encode($response));
+                exit();
             }else{
                 $response["process"] = "Datos_de_Cedula_vinculada_no_encontrados";
                 $response["message"] = "La cédula existe en la base de datos, pero los datos no cargaron";
                 header('Content-Type: application/json');
                 echo (json_encode($response));
+                exit();
             }
         }     
     }else{
@@ -71,19 +74,14 @@ if ($querys->rowCount() > 0) {
         $response["message"] = "La cédula existe en la base de datos, pero no es un paciente dependentiente para este usario principal";
         header('Content-Type: application/json');
         echo (json_encode($response));
-    }
-                  
+        exit();
+    }         
 }else {
-    header('Content-Type: application/json');
     $response["process"] = "Errordecedulaenbasedatos";
-    $response["message"] = "Error, no se encuentra esta cédula en la base datos";    
+    $response["message"] = "Error, no se encuentra esta cédula en la base datos"; 
+    header('Content-Type: application/json');   
     echo(json_encode($response));
+    exit();
 }
 
-
-   
-
-
-
 /* http://localhost/ApisTesis/PacientesDependientes/BuscarUserDepen.php?Id_UsuarioPrincipal=4&&Cedula_DNI=9-156-187 <<<<< LINK DEL API   */
-?>
